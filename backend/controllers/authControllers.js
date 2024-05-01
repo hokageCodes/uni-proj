@@ -1,5 +1,4 @@
 //  controllers/authControllers.js
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
@@ -38,7 +37,10 @@ exports.registerUser = async (req, res) => {
     // Return jsonwebtoken
     const payload = {
       user: {
-        id: user.id
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        matricNumber: user.matricNumber
       }
     };
 
@@ -79,14 +81,18 @@ exports.loginUser = async (req, res) => {
 
     const payload = {
       user: {
-        id: user.id
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        matricNumber: user.matricNumber
       }
     };
 
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '5h' },
       (err, token) => {
         if (err) throw err;
-        res.json({ token, msg: 'Logged in successfully' });
+        // Return both token and user details
+        res.json({ token, user, msg: 'Logged in successfully' });
       }
     );
   } catch (err) {
@@ -96,8 +102,6 @@ exports.loginUser = async (req, res) => {
 };
 
 
-
-  
 // Register a new admin
 exports.registerAdmin = async (req, res) => {
   const { fullName, email, password } = req.body;

@@ -1,25 +1,27 @@
 // context/AuthContext.js
 "use client"
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import jwtDecode from 'jsonwebtoken/decode'; 
+import jwt from 'jsonwebtoken';
+import { useRouter } from 'next/navigation';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const isAuthenticated = !user;
 
-    const isAuthenticated = user; 
+    const router = useRouter();
 
     useEffect(() => {
         const verifyUser = async () => {
             try {
                 const token = localStorage.getItem('token');
                 if (token) {
-                    const config = {
-                        headers: { Authorization: `Bearer ${token}` }
-                    };
-                    const response = await axios.get('http://localhost:8000/api/user/profile', config);
-                    setUser(response.data);
+                    const decoded = jwtDecode(token); // Use jwtDecode for clarity
+                    console.log("Decoded token:", decoded);
+                    setUser(decoded.user);
                 }
             } catch (error) {
                 console.error("Authentication error:", error);
@@ -35,6 +37,7 @@ export const AuthProvider = ({ children }) => {
             const response = await axios.post('http://localhost:8000/api/auth/login', { email, password });
             localStorage.setItem('token', response.data.token);
             setUser(response.data.user);
+            router.push('/'); // Redirect to homepage after login
         } catch (error) {
             console.error("Login error:", error);
             throw error;
@@ -44,7 +47,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('token');
         setUser(null);
-        // window.location.href = "/" 
+        router.push('/login'); // Redirect to login page after logout
     };
 
     return (
@@ -54,4 +57,4 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => React.useContext(AuthContext);

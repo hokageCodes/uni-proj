@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Link from 'next/link';
 import ThemeToggle from '../ThemeToggle';
-import UserProfile from '../user-menu/UserMenu';
+import UserProfile from '../user-menu/UserMenu'; 
 
 const Navbar = () => {
-    const { isAuthenticated, user, logout } = useAuth();
+    const { isAuthenticated, user } = useAuth();
+    console.log(user)
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
 
     return (
         <nav className="bg-light-secondary dark:bg-dark-primary shadow-md py-4 px-5 fixed w-full z-50">
@@ -36,8 +36,8 @@ const Navbar = () => {
                     </ul>
                     <div className="w-full hidden md:flex items-center space-x-4 ml-auto">
                         <ThemeToggle />
-                        {isAuthenticated && user ? (
-                            <UserProfile user={user} logout={logout} setIsUserProfileOpen={setIsUserProfileOpen} />
+                        {isAuthenticated ? (
+                            <UserProfile user={user} />
                         ) : (
                             <>
                                 <Link legacyBehavior href="/login"><a className="px-4 py-2 rounded bg-blue-500 text-white">Login</a></Link>
@@ -55,8 +55,8 @@ const Navbar = () => {
                         <li><Link legacyBehavior href="/blog"><a className="text-sm px-2 py-4 hover:bg-gray-200 dark:hover:bg-gray-900">Blog</a></Link></li>
                         <li><Link legacyBehavior href="/contact"><a className="text-sm px-2 py-4 hover:bg-gray-200 dark:hover:bg-gray-900">Contact</a></Link></li>
                         <li><Link legacyBehavior href="/faq"><a className="text-sm px-2 py-4 hover:bg-gray-200 dark:hover:bg-gray-900">FAQ</a></Link></li>
-                        {isAuthenticated && user ? (
-                            <UserProfile user={user} logout={logout} setIsUserProfileOpen={setIsUserProfileOpen} />
+                        {!isAuthenticated ? (
+                            <UserProfile user={user} />
                         ) : (
                             <>
                                 <Link legacyBehavior href="/login"><a className="px-4 py-2 rounded bg-blue-500 text-white">Login</a></Link>
