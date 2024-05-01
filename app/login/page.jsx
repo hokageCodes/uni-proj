@@ -1,16 +1,18 @@
 // components/Login.js
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { IoMailOutline, IoLockClosedOutline } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 const Login = () => {
     const [formData, setFormData] = useState({
         identifier: '',
         password: ''
     });
+    const {login, user,isAuthenticated} = useAuth();
     const [error, setError] = useState('');
     const router = useRouter();
 
@@ -20,22 +22,14 @@ const Login = () => {
 
     const onSubmit = async e => {
         e.preventDefault();
-        try {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            };
-            const body = JSON.stringify({ identifier, password });
-            const res = await axios.post('http://localhost:8000/api/auth/login', body, config);
-            // Assuming the response contains a token, redirect to homepage
-            console.log(res.data);
-            router.push('/');  // Redirect to homepage or dashboard as needed
-        } catch (err) {
-            console.error(err.response.data);
-            setError('Failed to login. Please check your credentials.');
-        }
+        await  auth.login({ identifier, password });
+
     };
+    useEffect(() => {
+        if(isAuthenticated){
+            router.push("/")
+        }
+    }, [isAuthenticated])
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">

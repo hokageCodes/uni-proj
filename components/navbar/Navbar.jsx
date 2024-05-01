@@ -8,7 +8,7 @@ import UserProfile from '../user-menu/UserMenu';
 
 const Navbar = () => {
     const { isAuthenticated, user } = useAuth();
-    console.log(user)
+    console.log({user})
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (

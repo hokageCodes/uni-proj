@@ -92,7 +92,7 @@ exports.loginUser = async (req, res) => {
       (err, token) => {
         if (err) throw err;
         // Return both token and user details
-        res.json({ token, user, msg: 'Logged in successfully' });
+        res.status(200).json({ token, user, msg: 'Logged in successfully' });
       }
     );
   } catch (err) {
